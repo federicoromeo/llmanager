@@ -9,6 +9,7 @@ from pydantic import BaseModel
 class Provider(Enum):
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
+    GOOGLE = "google"
         
     def list_all():
         return [provider.value for provider in Provider]

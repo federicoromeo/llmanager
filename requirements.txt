@@ -2,3 +2,4 @@ jsonschema==4.21.1
 python-dotenv==1.0.1
 openai==1.23.2
 anthropic==0.25.6
+google-generativeai==0.5.2

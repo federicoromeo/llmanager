@@ -4,6 +4,7 @@ Manager that lets you use with ease the biggest LLMs.
 Available integrations as of 21/04/2022:
 - OpenAI
 - Anthropic
+- Google Gemini
 ---------------------------------------------------------------
 
 #### Setup
@@ -32,6 +33,13 @@ python main.py --provider=<PROVIDER> # can be one of [openai]
 - [x] LLM base class interaction
 - [X] Integration with OpenAI
 - [X] Integration with Anthropic
-- [ ] Integration with Gemini
+- [X] Integration with Gemini
 - [ ] Integration with LLama
 - [ ] Integration with HuggingFace models
+
+
+#### TODO:
+
+- [ ] Allow for more choices (n)
+- [ ] Allow for multi-modality
+- [ ] Allow for streaming
