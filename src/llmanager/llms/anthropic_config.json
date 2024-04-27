@@ -1,3 +1,4 @@
 {
-    "model": "claude-3-opus-20240229"
+    "model": "claude-3-opus-20240229",
+    "stream": true
 }

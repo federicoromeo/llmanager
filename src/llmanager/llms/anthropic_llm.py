@@ -1,5 +1,5 @@
+import sys
 import json
-import logging
 
 from anthropic import Anthropic
 
@@ -34,7 +34,19 @@ class AnthropicLLM(LLM):
     def log_usage(self, response):
         logger.info(response.usage)
 
-    def chat(self, message:str) -> str:
+    def stream_response(self, response):
+        
+        answer = ""
+        for event in response:
+            if event.type == 'content_block_delta':
+                if event.delta.text:
+                    yield event.delta.text
+                    answer += event.delta.text
+
+        yield "\n"
+        self.add_message_to_thread(answer, role="assistant")
+
+    def chat(self, message:str):
         """Function to query the model.
 
         Args:
@@ -59,22 +71,28 @@ class AnthropicLLM(LLM):
             )
         except Exception as e:
             logger.error(e)
+            sys.exit(1)
 
-        # Log the token usage of the model.
-        self.log_usage(response)
+        if self.config.stream:
+            return self.stream_response(response)
 
-        # Get the response from the model.
-        answer = response.content[0].text
-
-        # Convert the response to JSON
-        if self.config.json_mode:
-            try:
-                answer = json.loads("{" + answer[:answer.rfind("}") + 1])
-                self.messages[-1]['content'] += str(answer)[1:]
-            except json.JSONDecodeError:
-                pass
-        # Add the response to the message list.
         else:
-            self.add_message_to_thread(answer, role="assistant")
 
-        return answer
+            # Log the token usage of the model.
+            self.log_usage(response)
+
+            # Get the response from the model.
+            answer = response.content[0].text
+
+            # Convert the response to JSON
+            if self.config.json_mode:
+                try:
+                    answer = json.loads("{" + answer[:answer.rfind("}") + 1])
+                    self.messages[-1]['content'] += str(answer)[1:]
+                except json.JSONDecodeError:
+                    pass
+            # Add the response to the message list.
+            else:
+                self.add_message_to_thread(answer, role="assistant")
+
+            return answer
