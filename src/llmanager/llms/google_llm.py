@@ -1,3 +1,5 @@
+import sys
+
 from google.ai import generativelanguage as glm
 import google.generativeai as genai
 
@@ -17,7 +19,8 @@ class GoogleLLM(LLM):
         self.name = "Google"
         genai.configure() # api_key defaults to os.getenv('GOOGLE_API_KEY')
         self.client = genai.GenerativeModel(self.config.model)
-        self.thread = self.client.start_chat(history=[])
+        self.messages = []
+        #self.thread = self.client.start_chat(history=self.messages)
 
     def load_api_key(self):
         super().load_api_key()
@@ -27,15 +30,28 @@ class GoogleLLM(LLM):
         return super().chat_loop()
 
     def add_message_to_thread(self, message:str, role:str):
-        pass
+        self.messages.append({"role": role, "parts": [message]})
 
     def add_system_prompt(self, prompt:str):
-        pass
+        self.add_message_to_thread(prompt, role="system")
 
     def log_usage(self, response: glm.GenerateContentResponse):
         logger.info(self.client.count_tokens(response.candidates[0].content.parts[0].text))
 
-    def chat(self, message:str) -> str:
+    def stream_response(self, response: glm.GenerateContentResponse):
+
+        answer = ""
+
+        for chunk in response:
+            if chunk:
+                yield chunk.text
+                answer += chunk.text
+
+        yield "\n"
+        self.add_message_to_thread(answer, role="model")
+
+
+    def chat(self, message:str):
         """Function to query the model.
 
         Args:
@@ -45,10 +61,12 @@ class GoogleLLM(LLM):
             The response from the model
         """
 
+        self.add_message_to_thread(message, role="user")
+
         # Query the model.
         try:
-            response = self.thread.send_message(
-                message,
+            response = self.client.generate_content(
+                self.messages,
                 stream=self.config.stream,
                 generation_config=genai.GenerationConfig(
                     max_output_tokens=self.config.max_tokens,
@@ -60,17 +78,21 @@ class GoogleLLM(LLM):
             response.resolve()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(f"Error in {self.name}LLM.chat: {e}")
+            sys.exit(1)
 
-        # Log the token usage of the model.
-        self.log_usage(response)
 
-        # Get the response from the model.
-        answer = response.candidates[0].content.parts[0].text
-        return answer
+        if self.config.stream:
+            return self.stream_response(response)
 
-    def list_models(self):
-        logger.info(f"Available models for {self.name} LLM:")
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                print(" -", m.name.split('/')[-1])
+        else:
+
+            # Log the token usage of the model.
+            self.log_usage(response)
+
+            # Get the response from the model.
+            answer = response.candidates[0].content.parts[0].text
+
+            self.add_message_to_thread(answer, role="model")
+
+            return answer

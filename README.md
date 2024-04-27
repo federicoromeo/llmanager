@@ -2,9 +2,9 @@
 
 Manager that lets you use with ease the biggest LLMs.
 Available integrations as of 21/04/2022:
-- OpenAI
-- Anthropic
-- Google Gemini
+- OpenAI ([source](https://platform.openai.com/docs/api-reference))
+- Anthropic ([source](https://docs.anthropic.com/claude/reference/getting-started-with-the-api))
+- Google Gemini ([source](https://ai.google.dev/gemini-api/docs/get-started/python?hl=en))
 ---------------------------------------------------------------
 
 #### Setup
@@ -24,7 +24,12 @@ Then add the useful attributes (e.g. model) in the dedicated *json file* in the 
 
 ```bash
 cd src/llmanager/
-python main.py --provider=<PROVIDER> # can be one of [openai] 
+python main.py --provider=<PROVIDER> # can be one of [openai, google, anthropic)
+```
+
+or just run this to get help:
+```bash
+python main.py --help
 ```
 
 
@@ -42,4 +47,5 @@ python main.py --provider=<PROVIDER> # can be one of [openai]
 
 - [ ] Allow for more choices (n)
 - [ ] Allow for multi-modality
-- [ ] Allow for streaming
+- [ ] Allow for listing available models for each provider
+- [X] Allow for streaming
