@@ -1,3 +1,4 @@
+import sys
 import json
 
 from openai import OpenAI
@@ -33,7 +34,19 @@ class OpenaiLLM(LLM):
     def log_usage(self, response):
         logger.info(response.usage)
 
-    def chat(self, message:str) -> str:
+    def stream_response(self, response):
+        
+        for chunk in response:
+            if chunk.choices[0].delta.content:
+                yield chunk.choices[0].delta.content
+        
+        yield "\n"
+        
+        answer = ''.join([chunk.choices[0].delta.content for chunk in response if chunk.choices[0].delta.content])
+        self.add_message_to_thread(answer, role="assistant")
+        
+
+    def chat(self, message:str):
         """Function to query the model.
 
         Args:
@@ -57,21 +70,27 @@ class OpenaiLLM(LLM):
             )
         except Exception as e:
             logger.error(e)
+            sys.exit(1)
 
-        # Log the token usage of the model.
-        self.log_usage(response)
+        if self.config.stream:
+            return self.stream_response(response)
 
-        # Get the response from the model.
-        answer = response.choices[0].message.content
+        else:
 
-        # Add the response to the message list.
-        self.add_message_to_thread(answer, role="assistant")
+            # Log the token usage of the model.
+            self.log_usage(response)
 
-        # Convert the response to JSON
-        if self.config.json_mode:
-            try:
-                answer = json.loads(answer)
-            except json.JSONDecodeError:
-                pass
+            # Get the response from the model.
+            answer = response.choices[0].message.content
 
-        return answer
+            # Add the response to the message list.
+            self.add_message_to_thread(answer, role="assistant")
+
+            # Convert the response to JSON
+            if self.config.json_mode:
+                try:
+                    answer = json.loads(answer)
+                except json.JSONDecodeError:
+                    pass
+
+            return answer
