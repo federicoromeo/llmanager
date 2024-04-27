@@ -64,7 +64,7 @@ def main(args: argparse.Namespace):
 
     provider = Provider[args.provider.upper()]
 
-    ProviderLLM = load_provider_llm(args)
+    providerLLM = load_provider_llm(args)
 
     print()
     print("="*100)
@@ -77,7 +77,7 @@ def main(args: argparse.Namespace):
         logger.error(f"Error when creating LLMConfig object, {error['msg']}: {error['loc']}")
         sys.exit(1)
 
-    llm = ProviderLLM(config)
+    llm = providerLLM(config)
 
     llm.chat_loop()
 

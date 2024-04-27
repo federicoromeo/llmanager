@@ -28,6 +28,17 @@ class LLM(ABC):
         if not self.api_key_env_name in os.environ:
             raise ValueError(f"{self.api_key_env_name} environment variable should be set in the '.env' file")
 
+    @abstractmethod
+    def stream_response(self, response):
+        """Stream the response from the model.
+        
+        This method takes a response from the model and streams it to the console.
+        
+        Args:
+            response: The response from the model as a generator
+        """
+        pass
+
     def chat_loop(self):
         """Start the chat loop. 
         
@@ -36,10 +47,17 @@ class LLM(ABC):
         while True:
             message = input("\nUSER: ")
             response = self.chat(message=message)
-            print(f"\n{self.config.provider.name}: {response}")
+            if self.config.stream:
+                chunks = iter(response)
+                first_chunk = next(chunks)
+                print(f"\n{self.config.provider.name}: {first_chunk}", end="")
+                for chunk in chunks:
+                    print(chunk, end="")
+            else:
+                print(f"\n{self.config.provider.name}: {response}")
 
     @abstractmethod
-    def chat(self, message: str) -> str:
+    def chat(self, message: str):
         """Chat with the model.
         
         This method should be implemented by the child class.
