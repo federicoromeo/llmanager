@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from abc import ABC, abstractmethod
 
 from llm_config import LLMConfig
+from logging_config import logger
 
 load_dotenv()
 
@@ -14,10 +15,18 @@ class LLM(ABC):
     def __init__(self, config: LLMConfig):
         super().__init__()
         self.config = config
+        self.load_api_key()
+        
+    def load_api_key(self):
+        """Load the API key from the environment variable.
+        
+        This method loads the API key from the environment variable.
+        """
         self.api_key_env_name = f"{self.config.provider.name}_API_KEY"
+        if self.config.verbose:
+            logger.debug(f"API Key Environment Variable: {self.api_key_env_name}: {os.environ.get(self.api_key_env_name)}")
         if not self.api_key_env_name in os.environ:
             raise ValueError(f"{self.api_key_env_name} environment variable should be set in the '.env' file")
-
 
     def chat_loop(self):
         """Start the chat loop. 
@@ -28,7 +37,6 @@ class LLM(ABC):
             message = input("\nUSER: ")
             response = self.chat(message=message)
             print(f"\n{self.config.provider.name}: {response}")
-
 
     @abstractmethod
     def chat(self, message: str) -> str:
@@ -41,7 +49,6 @@ class LLM(ABC):
             message: The message to send to the model.
         """
         pass
-
     
     @abstractmethod
     def add_message_to_thread(self, message:str, role:str):
@@ -57,7 +64,6 @@ class LLM(ABC):
 
         pass
 
-
     @abstractmethod
     def log_usage(self, response):
         """Log the usage of the model.
@@ -70,7 +76,6 @@ class LLM(ABC):
         """
         pass
 
-    
     @abstractmethod
     def add_system_prompt(self, prompt:str):
         """Add a system prompt to the message thread.

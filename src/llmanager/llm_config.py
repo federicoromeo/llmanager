@@ -31,6 +31,9 @@ class LLMConfig(BaseModel):
     temperature: Optional[float] = 1.0
     """Tee temperature to use for generation"""
 
+    top_p: Optional[float] = 1.0
+    """The nucleus sampling probability"""
+
     seed: Optional[int] = None
     """The seed to use for generation"""
 

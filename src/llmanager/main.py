@@ -40,8 +40,8 @@ def load_provider_llm(args: argparse.Namespace):
         module = __import__(module_name, fromlist=[module_name])
         if verbose:
             logger.log(logging.DEBUG, f"Module: {module}")
-    except (ModuleNotFoundError, ImportError):
-        logger.log(logging.ERROR, f"Support for {provider.name} has not been implemented yet")
+    except (ModuleNotFoundError, ImportError) as e:
+        logger.log(logging.ERROR, f"Support for {provider.name} has not been implemented yet ({e})")
         sys.exit(1)
 
     ProviderLLM = getattr(module, class_name, None)
