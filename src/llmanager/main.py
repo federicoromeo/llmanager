@@ -24,32 +24,32 @@ def load_provider_llm(args: argparse.Namespace):
     provider = Provider[args.provider.upper()]
 
     if verbose:
-        logger.log(logging.DEBUG, f"Verbose mode enabled")
-        logger.log(logging.DEBUG, f"Args: {args}")
+        logger.debug(f"Verbose mode enabled")
+        logger.debug(f"Args: {args}")
 
     # Dispatch the main function based on the provider
 
     module_name = f"llms.{provider.value}_llm"
     class_name = f"{provider.value.capitalize()}LLM"
     if verbose:
-        logger.log(logging.DEBUG, f"Using {provider.name} provider")
-        logger.log(logging.DEBUG, f"Module name: {module_name}")
-        logger.log(logging.DEBUG, f"Class name: {class_name}")
+        logger.debug(f"Using {provider.name} provider")
+        logger.debug(f"Module name: {module_name}")
+        logger.debug(f"Class name: {class_name}")
 
     try:
         module = __import__(module_name, fromlist=[module_name])
         if verbose:
-            logger.log(logging.DEBUG, f"Module: {module}")
+            logger.debug(f"Module: {module}")
     except (ModuleNotFoundError, ImportError) as e:
-        logger.log(logging.ERROR, f"Support for {provider.name} has not been implemented yet ({e})")
+        logger.error(f"Support for {provider.name} has not been implemented yet ({e})")
         sys.exit(1)
 
     ProviderLLM = getattr(module, class_name, None)
     if verbose:
-        logger.log(logging.DEBUG, f"ProviderLLM: {ProviderLLM}")
+        logger.debug(f"ProviderLLM: {ProviderLLM}")
 
     if not ProviderLLM:
-        logger.log(logging.ERROR, f"Support for {provider.name} has not been implemented yet")
+        logger.error(f"Support for {provider.name} has not been implemented yet")
         sys.exit(1)
 
     return ProviderLLM
@@ -74,7 +74,7 @@ def main(args: argparse.Namespace):
         config = LLMConfig.from_json(provider, f"llms/{provider.value}_config.json")
     except ValidationError as e:
         error = json.loads(e.json())[0]
-        logger.log(logging.ERROR, f"Error when creating LLMConfig object, {error['msg']}: {error['loc']}")
+        logger.error(f"Error when creating LLMConfig object, {error['msg']}: {error['loc']}")
         sys.exit(1)
 
     llm = ProviderLLM(config)

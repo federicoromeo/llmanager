@@ -32,7 +32,7 @@ class AnthropicLLM(LLM):
         self.add_message_to_thread(prompt, role="system")
 
     def log_usage(self, response):
-        logger.log(logging.INFO, response.usage)
+        logger.info(response.usage)
 
     def chat(self, message:str) -> str:
         """Function to query the model.
@@ -58,7 +58,7 @@ class AnthropicLLM(LLM):
                 stream = self.config.stream,
             )
         except Exception as e:
-            logger.log(logging.ERROR, e)
+            logger.error(e)
 
         # Log the token usage of the model.
         self.log_usage(response)

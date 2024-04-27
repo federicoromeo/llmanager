@@ -24,7 +24,7 @@ class LLM(ABC):
         """
         self.api_key_env_name = f"{self.config.provider.name}_API_KEY"
         if self.config.verbose:
-            logger.debug(f"API Key Environment Variable: {self.api_key_env_name}: {os.environ.get(self.api_key_env_name)}")
+            logger.debug(f"API Key Environment Variable: {self.api_key_env_name}: {os.getenv(self.api_key_env_name)}")
         if not self.api_key_env_name in os.environ:
             raise ValueError(f"{self.api_key_env_name} environment variable should be set in the '.env' file")
 
