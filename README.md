@@ -47,5 +47,5 @@ python main.py --help
 
 - [ ] Allow for more choices (n)
 - [ ] Allow for multi-modality
-- [ ] Allow for listing available models for each provider
+- [X] Allow for listing available models for each provider
 - [X] Allow for streaming

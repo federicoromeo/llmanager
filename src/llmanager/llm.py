@@ -105,3 +105,12 @@ class LLM(ABC):
             prompt: The prompt to add to the message thread.
         """
         pass
+
+    @abstractmethod
+    def list_models(self):
+        """List the available models for the provider.
+
+        This method should be implemented by the child class.
+        It should list the available models for the provider.
+        """
+        pass

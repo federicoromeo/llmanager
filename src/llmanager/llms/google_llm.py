@@ -96,3 +96,8 @@ class GoogleLLM(LLM):
             self.add_message_to_thread(answer, role="model")
 
             return answer
+
+    def list_models(self):
+        logger.info(f"Available models for {self.name} LLM:")
+        models = [model.name.split('/')[-1] for model in genai.list_models() if 'generateContent' in model.supported_generation_methods]
+        logger.info(models)

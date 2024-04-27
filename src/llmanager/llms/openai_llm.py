@@ -66,10 +66,11 @@ class OpenaiLLM(LLM):
                 max_tokens = self.config.max_tokens,
                 temperature = self.config.temperature,
                 seed = self.config.seed,
+                n = 1, #self.config.n
                 stream = self.config.stream,
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(f"Error in {self.name}LLM.chat: {e}")
             sys.exit(1)
 
         if self.config.stream:
@@ -94,3 +95,9 @@ class OpenaiLLM(LLM):
                     pass
 
             return answer
+
+    def list_models(self):
+        logger.info(f"Available models for {self.name} LLM:")
+        models = [model.id for model in self.client.models.list().data if str(model.id).startswith("gpt")]
+        logger.info(models)
+        

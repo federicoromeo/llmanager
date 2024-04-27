@@ -70,7 +70,7 @@ class AnthropicLLM(LLM):
                 stream = self.config.stream,
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(f"Error in {self.name}LLM.chat: {e}")
             sys.exit(1)
 
         if self.config.stream:
@@ -96,3 +96,8 @@ class AnthropicLLM(LLM):
                 self.add_message_to_thread(answer, role="assistant")
 
             return answer
+
+    def list_models(self):
+        logger.info(f"Available models for {self.name} LLM:")
+        models = ["claude-3-opus-20240229", "anthropic.claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
+        logger.info(models)

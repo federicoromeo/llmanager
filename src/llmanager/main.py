@@ -79,6 +79,10 @@ def main(args: argparse.Namespace):
 
     llm = providerLLM(config)
 
+    if args.list and provider:
+        llm.list_models()
+        sys.exit(0)
+
     llm.chat_loop()
 
 
@@ -91,6 +95,13 @@ if __name__ == "__main__":
         type=str,
         choices=Provider.list_all(),
         help=f"Specify the provider. Available providers: {Provider.list_all()}"
+    )
+    parser.add_argument(
+        '--list',
+        required=False,
+        default=False,
+        action='store_true',
+        help='List all available models for the specified provider'
     )
     parser.add_argument(
         "--verbose",
