@@ -1,5 +1,5 @@
 {
-    "model": "dbrx",
+    "model": "llama3:latest",
     "stream": false,
     "max_tokens": 3000,
     "temperature": 1.0,
