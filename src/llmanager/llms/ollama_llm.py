@@ -86,8 +86,6 @@ class OllamaLLM(LLM):
             return self.stream_response(response)
 
         else:
-            logger.info(response)
-            logger.info(response.keys())
 
             # Log the token usage of the model.
             self.log_usage(response)
