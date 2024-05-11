@@ -15,6 +15,10 @@ class LLM(ABC):
     def __init__(self, config: LLMConfig):
         super().__init__()
         self.config = config
+        if self.config.verbose:
+            logger.debug("Config:")
+            for key, value in self.config.model_dump().items():
+                logger.debug(f" - {key}: {value}")
         self.load_api_key()
         
     def load_api_key(self):
