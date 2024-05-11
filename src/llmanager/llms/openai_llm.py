@@ -36,13 +36,15 @@ class OpenaiLLM(LLM):
 
     def stream_response(self, response):
         
+        answer = ""
         for chunk in response:
-            if chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content
+            delta = chunk.choices[0].delta.content
+            if delta:
+                answer += delta
+                yield delta
         
         yield "\n"
         
-        answer = ''.join([chunk.choices[0].delta.content for chunk in response if chunk.choices[0].delta.content])
         self.add_message_to_thread(answer, role="assistant")
         
 
