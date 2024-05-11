@@ -20,14 +20,17 @@ Then copy the .env file:
 ```bash
 cp .env.example .env
 ```
-and put your *api_key* (if required) in the dedicated environment variable in the .env file
-
-Then add the useful attributes (e.g. model) in the dedicated *json file* in the [llms folder](src/llmanager/llms/).
+and put your *api_key* (if required) in the dedicated environment variable in the [.env](.env). file
 
 Move to the root directory:
 ```bash
 cd src/llmanager/
 ```
+
+#### LLM Config
+
+In the [llms folder](src/llmanager/llms/configs/) there is a single config file for each provider.
+Add the useful attributes (e.g. *model*, *stream, *json_mode*) in the dedicated **json file**.
 
 #### Run
 
