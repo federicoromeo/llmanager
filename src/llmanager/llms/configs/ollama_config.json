@@ -1,0 +1,10 @@
+{
+    "model": "dbrx",
+    "stream": false,
+    "max_tokens": 3000,
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "seed": null,
+    "json_mode": false,
+    "verbose": false
+}

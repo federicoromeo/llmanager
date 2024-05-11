@@ -72,7 +72,7 @@ def main(args: argparse.Namespace):
     print()
     
     try:
-        config = LLMConfig.from_json(provider, f"llms/{provider.value}_config.json")
+        config = LLMConfig.from_json(provider, f"llms/configs/{provider.value}_config.json")
     except ValidationError as e:
         error = json.loads(e.json())[0]
         logger.error(f"Error when creating LLMConfig object, {error['msg']}: {error['loc']}")
