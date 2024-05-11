@@ -1,0 +1,4 @@
+{
+    "model": "llama3:latest",
+    "stream": false
+}
