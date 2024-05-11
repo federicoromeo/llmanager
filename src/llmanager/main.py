@@ -4,7 +4,8 @@ import logging
 import argparse
 from pydantic import ValidationError
 
-from llm_config import LLMConfig, Provider
+from llm_config import LLMConfig
+from provider import Provider
 from logging_config import logger
 
 

@@ -1,18 +1,10 @@
 import json
-from enum import Enum
 from typing import Optional
 
 import jsonschema
 from pydantic import BaseModel
 
-
-class Provider(Enum):
-    OPENAI = "openai"
-    ANTHROPIC = "anthropic"
-    GOOGLE = "google"
-        
-    def list_all():
-        return [provider.value for provider in Provider]
+from provider import Provider
 
 
 class LLMConfig(BaseModel):
