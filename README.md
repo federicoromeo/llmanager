@@ -39,12 +39,25 @@ Run the desired LLM with:
 python main.py --provider=<PROVIDER> # can be one of [openai, google, anthropic, ollama]
 ```
 
+Otherwise, build your custom pipeline inside the [src folder](src/llmanager/) with:
 
-or just run this to get help:
-```bash
-python main.py --help
+```python
+from llm import LLM
+from provider import Provider
+from llm_config import LLMConfig
+
+llm = LLM(
+    config = LLMConfig(
+        provider=Provider.ANTHROPIC,
+        model="claude-3-opus-20240229",
+        stream=True,
+        #json_mode=False,
+        #temperature=1.0,
+    )
+)
+#llm.list_models()
+llm.chat_loop()
 ```
-
 
 #### Changelog
 

@@ -11,10 +11,25 @@ class LLM(ABC):
     """
     Base class for handling general LLM interactions
     """
-
+    
+    def __new__(cls, config: LLMConfig):
+        if cls is LLM:
+            # Dynamically import the module and class
+            module_name = f"llms.{config.provider.value}_llm"
+            class_name = f"{config.provider.value.capitalize()}LLM"
+            module = __import__(module_name, fromlist=[module_name])
+            ProviderLLM = getattr(module, class_name, None)
+            # Check if the class was found in the module
+            if ProviderLLM is None:
+                raise ValueError(f"LLM '{class_name}' not found in module {__name__}")
+            return super(LLM, ProviderLLM).__new__(ProviderLLM)
+        return super().__new__(cls)
+    
     def __init__(self, config: LLMConfig):
         super().__init__()
         self.config = config
+        if type(self) is LLM:
+            raise TypeError("Cannot instantiate LLM directly")
         if self.config.verbose:
             logger.debug("Config:")
             for key, value in self.config.model_dump().items():
